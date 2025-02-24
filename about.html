@@ -5,8 +5,8 @@
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body>
-    <div class="h-screen flex flex-col justify-center items-center content-center">
+<body class="flex content-center justify-center">
+    <div class="p-4">
         <h1 class="text-lg my-2">About Autos Database</h1>
         <h2 class="my-2">This follows all assignment specifications:</h2>
         <ul class="content-start">
@@ -21,13 +21,21 @@
             <li>&#10004; Using Tailwind</li>
             <li>&#10004; Responsive Design</li>
         </ul>
+        <h2 class="my-2 mt-4">Key Improvements & Best Practices:</h2>
+        <ul>
+          <li>&#9989; Implemented PRG Pattern: Ensures that form resubmission issues are avoided.</li>
+          <li>&#9989; Used Flash Messages: Temporary error/success messages stored in session.</li>
+          <li>&#9989; Improved Security: Used PDO prepared statements to prevent SQL Injection.</li>
+          <li>&#9989; Proper Session Handling: Users must be logged in to access view.php and add.php.</li>
+          <li>&#9989; Better User Experience: Clear validation messages and redirect flows.</li>
+        </ul>
         <section>
-            <nav class="block w-full max-w-screen-lg px-4 py-2 mx-auto text-white bg-white shadow-md rounded-md lg:px-8 lg:py-3 mt-10">
+            <nav class="block w-full px-4 py-2 mx-auto text-white bg-white shadow-md rounded-md lg:px-8 lg:py-3 mt-10">
                 <div class="container flex flex-wrap items-center justify-between mx-auto text-gray-800">
                   <a href="index.php"
                     class="mr-4 block cursor-pointer py-1.5 text-base text-gray-800 font-semibold">Autos Database</a>
-                  <div class="hidden lg:block">
-                    <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+                  <div class="lg:block">
+                    <ul class="flex gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
                       <li class="flex items-center p-1 text-sm gap-x-2 text-gray-600">
                         <a href="login.php" class="flex items-center">Login</a>
                       </li>
@@ -44,15 +52,6 @@
                         <a href="https://habibmote.com/" target="_blank" class="flex items-center">About Me</a>
                     </ul>
                   </div>
-                  <button
-                    class="relative ml-auto h-6 max-h-[40px] w-6 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden"
-                    type="button">
-                    <span class="absolute transform -trangray-x-1/2 -trangray-y-1/2 top-1/2 left-1/2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-                      </svg>
-                    </span>
-                  </button>
                 </div>
               </nav>
         </section>

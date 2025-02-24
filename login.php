@@ -1,42 +1,45 @@
 <?php
-require_once "pdo.php";
 session_start();
+require_once "pdo.php";
 
-$salt = 'XyZzy12*_';
-$stored_hash = hash('md5', $salt . 'php123');
+if (isset($_POST['email']) && isset($_POST['pass'])) {
+    unset($_SESSION['name']);
 
-if (isset($_POST['cancel'])) {
-    header("Location: login.php");
-    return;
-}
-
-if (isset($_POST['who']) && isset($_POST['pass'])) {
-    if (strlen($_POST['who']) < 1 || strlen($_POST['pass']) < 1) {
+    if (strlen($_POST['email']) < 1 || strlen($_POST['pass']) < 1) {
         $_SESSION['error'] = "Email and password are required";
-    } elseif (!strpos($_POST['who'], '@')) {
+        header("Locaton: login.php");
+        return;
+    } elseif (!strpos($_POST['email'], '@')) {
         $_SESSION['error'] = "Email must have an at-sign (@)";
-    } else {
-        $check = hash('md5', $salt . $_POST['pass']);
-        if ($check == $stored_hash) {
-            error_log("Login success " . $_POST['who']);
-            $_SESSION['name'] = $_POST['who'];
-            header("Location: autos.php");
-            return;
-        } else {
-            error_log("Login fail " . $_POST['who'] . " $check");
-            $_SESSION['error'] = "Incorrect password";
-            return;
-        }
+        header("Location: login.php");
+        return;
     }
-    header("Location: index.php");
-    return;
+
+    $salt = 'XyZzy12*_';
+    $check = hash('md5', $salt . $_POST['pass']);
+    $stmt = $pdo->prepare("SELECT name FROM users WHERE email= :email AND password = :pass");
+    $stmt->execute([':email' => $_POST['email'], ':pass' => $check]);
+    $row = $stmt->fetch((PDO::FETCH_ASSOC));
+    if ($row) {
+        $_SESSION['name'] = $row['name'];
+        header("Location: view.php");
+        return;
+    } else {
+        $_SESSION['error'] = "Incorrect password";
+        header("Location: login.php");
+        return;
+    }
 }
+
+$error = $_SESSION['error'] ?? false;
+unset($_SESSION['error']);
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Habib Mote - Login Page</title>
+    <title>Habib Mote - Login</title>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
@@ -44,11 +47,10 @@ if (isset($_POST['who']) && isset($_POST['pass'])) {
     <div class="h-screen md:flex items-center content-center">
         <div class="mx-auto flex flex-col max-w-sm items-center gap-x-4 bg-white p-6 justify-center">
             <h1 class="text-lg">Please Log In</h1>
-            <p class="text-sm text-gray-700">Enter credentials (email@example.com / php123)</p>
+            <p class="text-sm text-gray-700">Enter credentials (user@example.com / php123)</p>
             <?php
-            if (isset($_SESSION['error'])) {
-                echo '<p class="mx-auto flex max-w-sm items-center gap-x-4 bg-white p-6 justify-center" style="color: red;">' . htmlentities($_SESSION['error']) . "</p>\n";
-                unset($_SESSION['error']);
+            if ($error) {
+                echo '<p class="mx-auto flex max-w-sm items-center gap-x-4 bg-white p-6 justify-center" style="color: red;">' . htmlentities($error) . "</p>\n";
             }
             ?>
         </div>
@@ -56,7 +58,7 @@ if (isset($_POST['who']) && isset($_POST['pass'])) {
             <form method="POST">
                 <div class="w-full max-w-sm min-w-[200px] my-3">
                     <label class="block mb-2 text-sm text-slate-600" for="email">Email:</label>
-                    <input class="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" placeholder="Type here..." type="text" name="who" id="email"><br/>
+                    <input class="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" placeholder="Type here..." type="text" name="email" id="email"><br/>
                 </div>
                 <div class="w-full max-w-sm min-w-[200px] my-3">
                     <label class="block mb-2 text-sm text-slate-600" for="pass">Password:</label>
@@ -70,7 +72,7 @@ if (isset($_POST['who']) && isset($_POST['pass'])) {
                 </div>
                 <div class="flex w-max items-center gap-x-10 justify-center content-center my-10">
                     <button class="rounded-md bg-green-800 py-1 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-green-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="submit">Log In</button>
-                    <button class="rounded-md bg-gray-200 border border-transparent py-1 px-4 text-center text-sm transition-all text-slate-600 hover:bg-gray-300 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="submit" name="cancel">Cancel</button>
+                    <a class="rounded-md bg-gray-200 border border-transparent py-1 px-4 text-center text-sm transition-all text-slate-600 hover:bg-gray-300 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" href="index.php">Cancel</a>
                 </div>
             </form>
         </div>

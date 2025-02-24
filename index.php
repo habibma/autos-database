@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +11,7 @@
 </head>
 <body>
     <div class="h-screen flex flex-col justify-center items-center content-center">
-        <h1 class="text-lg my-2">Welcome to Autos Database</h1>
+        <h1 class="text-lg my-2">Welcome the Automobile Database</h1>
         <p class="my-2">Please <a class="text-red-500" href="login.php">Log In</a></p>
         <p>Attempt to go to <a class="text-red-500" href="autos.php">autos.php</a> without logging in - it should fail.</p>
     </div>
