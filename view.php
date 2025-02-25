@@ -3,7 +3,7 @@ session_start();
 require_once "pdo.php";
 
 if (!isset($_SESSION['name'])) {
-    die("Not logged in");
+    die("ACCESS DENIED: Not logged in");
 }
 
 // Fetch automobile records
@@ -13,12 +13,15 @@ $autos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Handle Flash Messages
 $success = $_SESSION['success'] ?? false;
 unset($_SESSION['success']);
+$error = $_SESSION['error'] ?? false;
+unset($_SESSION['error']);
 
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Automobile Database</title>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,7 +30,8 @@ unset($_SESSION['success']);
     <div class="min-h-screen flex flex-col items-center content-center p-4">
         <h1 class="text-lg my-2 self-start">Welcome, <?= htmlentities($_SESSION['name']) ?>!</h1>
 
-        <?php if ($success) echo "<p style='color:green;'>$success</p>"; ?>
+        <?php if ($success) echo "<p style='color:green;'>" . htmlentities($success) ."</p>"; ?>
+        <?php if ($error) echo "<p style='color:red;'>" . htmlentities($error) ."</p>"; ?>
         <div class="mx-auto flex max-w-sm items-center gap-x-4 bg-white p-6 justify-center">
             <h2>Automobiles</h2>
         </div>
@@ -35,15 +39,24 @@ unset($_SESSION['success']);
             <thead>
                 <tr>
                   <th class="border border-gray-300 p-2">Make</th>
+                  <th class="border border-gray-300 p-2">Model</th>
                   <th class="border border-gray-300 p-2">Year</th>
                   <th class="border border-gray-300 p-2">Mileage</th>
+                  <th class="border border-gray-300 p-2">Action</th>
                 </tr>
             <thead>
             <?php foreach ($autos as $auto): ?>
             <tr>
-                <th class="border border-gray-300 p-2"><?= htmlentities($auto['make']) ?></th>
-                <th class="border border-gray-300 p-2"><?= htmlentities($auto['year']) ?></th>
-                <th class="border border-gray-300 p-2"><?= htmlentities($auto['mileage']) ?> miles</th>
+                <td class="border border-gray-300 p-2"><?= htmlentities($auto['make']) ?></td>
+                <td class="border border-gray-300 p-2"><?= htmlentities($auto['model']) ?></td>
+                <td class="border border-gray-300 p-2"><?= htmlentities($auto['year']) ?></td>
+                <td class="border border-gray-300 p-2"><?= htmlentities($auto['mileage']) ?> miles</td>
+                <td>
+                    <form action="POST">
+                        <a class="border border-gray-300 p-2" href="edit.php?auto_id=<?= htmlentities($auto['auto_id']) ?>">Edit</a>
+                        <a class="border border-gray-300 p-2" href="delete.php?auto_id=<?= htmlentities($auto['auto_id']) ?>">Delete</a>
+                    </form>
+                </td>
             </tr>
             <?php endforeach; ?>
         </table>

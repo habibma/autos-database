@@ -7,7 +7,7 @@ if (isset($_POST['email']) && isset($_POST['pass'])) {
 
     if (strlen($_POST['email']) < 1 || strlen($_POST['pass']) < 1) {
         $_SESSION['error'] = "Email and password are required";
-        header("Locaton: login.php");
+        header("Location: login.php");
         return;
     } elseif (!strpos($_POST['email'], '@')) {
         $_SESSION['error'] = "Email must have an at-sign (@)";
